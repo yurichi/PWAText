@@ -26,7 +26,7 @@ self.addEventListener('install', function (e) {
     // 利用 caches.open()打开 cache 对象
     caches.open(cacheName).then(function (cache) {
       console.log('[ServiceWorker] Caching app shell');
-      // 调用 cache.addAll() 并传入一个 url 列表
+      // 调用 cache.addAll() 并传入一个列表
       return cache.addAll(filesToCache);
     })
   );
@@ -59,6 +59,7 @@ self.addEventListener('activate', function (e) {
   return self.clients.claim();
 });
 
+// 在页面发起http请求时，service worker可以通过fetch事件拦截请求，并且给出自己的响应。
 // 从缓存中加载 app shell。
 self.addEventListener('fetch', function (e) {
   console.log('[Service Worker] Fetch', e.request.url);
@@ -87,7 +88,7 @@ self.addEventListener('fetch', function (e) {
      */
     e.respondWith(
       // caches.match() 从网络请求触发的 fetch 事件中得到请求内容，
-      // 并判断请求的资源是 否存在于缓存中。然后以缓存中的内容作为响应，
+      // 并判断请求的资源是否存在于缓存中。然后以缓存中的内容作为响应，
       // 或者使用 fetch 函数来加载资源（如果缓存中没有该资源）。 
       // response 最后通过 e.respondWith() 返回给 web 页面。
       caches.match(e.request).then(function (response) {
